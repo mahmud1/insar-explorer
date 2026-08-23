@@ -62,6 +62,7 @@ from .qt_compat import (
     MESSAGE_ROLE_ACTION,
     MESSAGE_ROLE_DESTRUCTIVE,
     MESSAGE_ROLE_REJECT,
+    HOME_LOCATION,
 )
 from .time_series.fit_state import TimeSeriesFitState
 from .time_series.list_state import TimeSeriesListState
@@ -4473,7 +4474,7 @@ class GuiController(QObject):
         if saved_path and os.path.isdir(saved_path):
             return saved_path
 
-        home_path = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.HomeLocation)
+        home_path = QStandardPaths.writableLocation(HOME_LOCATION)
         if home_path and os.path.isdir(home_path):
             return home_path
 
