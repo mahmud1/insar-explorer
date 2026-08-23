@@ -244,6 +244,27 @@ pep8:
 	@echo $(PEP8EXCLUDE)
 
 
+
+# Security scanning
+.PHONY: bandit bandit-all security
+
+bandit:
+	@echo
+	@echo "--------------------------------"
+	@echo "Bandit: first-party source scan"
+	@echo "--------------------------------"
+	bandit -r src
+
+bandit-all:
+	@echo
+	@echo "--------------------------------"
+	@echo "Bandit: full plugin source scan"
+	@echo "--------------------------------"
+	bandit -r . -x ./test,./tests
+
+security: bandit bandit-all
+
+
 # Linting
 lint:
 	flake8 --config=./test/flake8.ini . > ./test/linting/flake8.log || \
