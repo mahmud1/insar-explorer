@@ -1,7 +1,6 @@
 """Application composition for time-series settings dependencies."""
 
 from dataclasses import dataclass
-import os
 
 from .time_series.persistence import (
     NullProjectStateRepository,
@@ -30,21 +29,10 @@ class TimeSeriesServices:
 
 
 def create_time_series_services(plugin_dir, diagnostic=None):
-    """Compose QSettings preferences with one-time legacy JSON migration."""
-    from .time_series.persistence import (
-        LegacyPreferencesMigrator, QSettingsUserPreferencesRepository,
-    )
-    from .time_series.persistence.legacy_json import LegacyJsonUserPreferencesRepository
+    """Compose time-series services from QSettings-backed preferences."""
+    from .time_series.persistence import QSettingsUserPreferencesRepository
 
-    config_path = os.path.join(plugin_dir, "src", "config", "config.json")
     user_preferences = QSettingsUserPreferencesRepository(diagnostic=diagnostic)
-    legacy = LegacyJsonUserPreferencesRepository(config_path)
-    LegacyPreferencesMigrator(
-        user_preferences,
-        legacy_repository=legacy,
-        legacy_path=config_path,
-        diagnostic=diagnostic,
-    ).migrate_if_needed()
     preferences = user_preferences.load()
     return TimeSeriesServices(
         user_preferences=user_preferences,

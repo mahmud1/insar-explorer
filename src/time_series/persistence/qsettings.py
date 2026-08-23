@@ -191,13 +191,6 @@ class QSettingsUserPreferencesRepository:
         """Return one fully namespaced QSettings key."""
         return f"{self.prefix}/{suffix}"
 
-    def contains(self, suffix: str) -> bool:
-        """Return whether one namespaced key exists."""
-        try:
-            return bool(self._settings.contains(self.key(suffix)))
-        except Exception:
-            return False
-
     def _raw(self, suffix: str, default: Any) -> Any:
         try:
             return self._settings.value(self.key(suffix), default)
@@ -251,35 +244,6 @@ class QSettingsUserPreferencesRepository:
                 "Unable to save time-series preferences."
             ) from exc
 
-    def read_migration_completed(self, suffix: str) -> bool:
-        """Return whether a migration completion marker is explicitly true."""
-        return self.contains(suffix) and read_bool(self._raw(suffix, False), False)
-
-    def write_schema_version(self, version: int, *, sync: bool = True) -> None:
-        """Write the preference schema version for migration coordination."""
-        self._write("schema_version", int(version))
-        if sync:
-            self.sync()
-
-    def write_migration_completed(
-        self, suffix: str, completed: bool, *, sync: bool = True
-    ) -> None:
-        """Write one migration completion marker."""
-        self._write(suffix, bool(completed))
-        if sync:
-            self.sync()
-
-    def remove(self, suffix: str, *, sync: bool = True) -> None:
-        """Remove one namespaced migration key."""
-        try:
-            self._settings.remove(self.key(suffix))
-        except Exception as exc:
-            raise PreferencesPersistenceError(
-                "Unable to update time-series preferences."
-            ) from exc
-        if sync:
-            self.sync()
-
     def _status_code(self) -> int:
         status_method = getattr(self._settings, "status", None)
         return _qsettings_status_code(status_method()) if status_method else 0
@@ -310,33 +274,16 @@ class QSettingsUserPreferencesRepository:
             ) from exc
 
     def save_scope(
-        self, scope: str, settings: Any, *, only_missing: bool = False,
-        sync: bool = True
+        self, scope: str, settings: Any, *, sync: bool = True
     ) -> None:
         """Persist one typed preference scope."""
         for spec_scope, field, suffix, _kind, _constraints in KEY_SPECS:
-            if spec_scope == scope and (
-                not only_missing or not self.contains(suffix)
-            ):
+            if spec_scope == scope:
                 value = getattr(settings, field)
                 self._write(suffix, value)
         self._write("schema_version", SCHEMA_VERSION)
         if sync:
             self.sync(scope=scope)
-
-    def save_preferences_missing(
-        self, preferences: TimeSeriesUserPreferences, *, sync: bool = True
-    ) -> None:
-        """Persist only absent keys, preserving existing QSettings values."""
-        for scope in _SCOPE_TYPES:
-            self.save_scope(
-                scope,
-                getattr(preferences, scope),
-                only_missing=True,
-                sync=False,
-            )
-        if sync:
-            self.sync()
 
     def save_series_defaults(self, settings: SeriesStyleSettings) -> None:
         self.save_scope("series_defaults", settings)

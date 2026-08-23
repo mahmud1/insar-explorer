@@ -3,6 +3,7 @@
 
 v2.9.0
 
+- Retire legacy JSON settings infrastructure.
 
 v2.8.0
 
