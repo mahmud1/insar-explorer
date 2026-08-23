@@ -2061,11 +2061,11 @@ class PlotTs():
         plot_widget = getattr(self.ui, "plot_widget", None)
         if plot_widget is not None:
             try:
-                return plot_widget.palette().color(QPalette.WindowText)
+                return plot_widget.palette().color(QPalette.ColorRole.WindowText)
             except (AttributeError, RuntimeError):
                 pass
         try:
-            return QApplication.palette().color(QPalette.WindowText)
+            return QApplication.palette().color(QPalette.ColorRole.WindowText)
         except RuntimeError:
             return QColor()
 

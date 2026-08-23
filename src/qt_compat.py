@@ -217,11 +217,12 @@ RASTER_LAYER = (
 )
 
 
-def exec_dialog(dialog):
-    """Execute a Qt dialog across PyQt5/PyQt6 bindings."""
-    if hasattr(dialog, "exec"):
-        return dialog.exec()
-    return dialog.exec_()
+def exec_dialog(dialog, *args, **kwargs):
+    """Execute a Qt dialog or menu across PyQt5/PyQt6 bindings."""
+    execute = getattr(dialog, "exec", None)
+    if callable(execute):
+        return execute(*args, **kwargs)
+    return getattr(dialog, "exec_")(*args, **kwargs)
 
 
 def available_screen_geometry(global_point, widget=None):

@@ -427,10 +427,7 @@ class InsarMap:
     @staticmethod
     def _millimeterRenderUnit():
         """Return the QGIS millimetre render unit across QGIS 3 and QGIS 4."""
-        render_unit = getattr(Qgis, "RenderUnit", None)
-        if render_unit is not None and hasattr(render_unit, "Millimeters"):
-            return render_unit.Millimeters
-        return QgsUnitTypes.RenderMillimeters
+        return QgsUnitTypes.RenderUnit.RenderMillimeters
 
     def _configurePointMarkerSymbol(self, symbol):
         """Apply point-marker shape, size, outline, and opacity consistently."""
@@ -496,7 +493,7 @@ class InsarMap:
         color_ramp_shader = QgsColorRampShader()
         color_ramp_shader.setMinimumValue(effective_min)
         color_ramp_shader.setMaximumValue(effective_max)
-        color_ramp_shader.setColorRampType(QgsColorRampShader.Interpolated)
+        color_ramp_shader.setColorRampType(QgsColorRampShader.Type.Interpolated)
 
         span = float(self.max_value) - float(self.min_value)
         items = []
@@ -510,7 +507,7 @@ class InsarMap:
             )
 
         color_ramp_shader.setColorRampItemList(items)
-        color_ramp_shader.setColorRampType(QgsColorRampShader.Interpolated)
+        color_ramp_shader.setColorRampType(QgsColorRampShader.Type.Interpolated)
         shader.setRasterShaderFunction(color_ramp_shader)
         renderer = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, shader)
         renderer.setClassificationMin(effective_min)
@@ -555,7 +552,7 @@ class InsarMap:
 
         shader = QgsRasterShader()
         color_ramp_shader = QgsColorRampShader()
-        color_ramp_shader.setColorRampType(QgsColorRampShader.Interpolated)
+        color_ramp_shader.setColorRampType(QgsColorRampShader.Type.Interpolated)
 
         color_ramp_items = []
         for i in range(self.num_classes):
@@ -580,7 +577,7 @@ class InsarMap:
                 color_ramp_items.append(QgsColorRampShader.ColorRampItem(adjusted_value, color, label))
 
         color_ramp_shader.setColorRampItemList(color_ramp_items)
-        color_ramp_shader.setColorRampType(QgsColorRampShader.Discrete)
+        color_ramp_shader.setColorRampType(QgsColorRampShader.Type.Discrete)
         shader.setRasterShaderFunction(color_ramp_shader)
 
         renderer = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, shader)

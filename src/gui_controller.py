@@ -4473,7 +4473,7 @@ class GuiController(QObject):
         if saved_path and os.path.isdir(saved_path):
             return saved_path
 
-        home_path = QStandardPaths.writableLocation(QStandardPaths.HomeLocation)
+        home_path = QStandardPaths.writableLocation(QStandardPaths.StandardLocation.HomeLocation)
         if home_path and os.path.isdir(home_path):
             return home_path
 
