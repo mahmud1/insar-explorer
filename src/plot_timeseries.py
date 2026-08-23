@@ -426,7 +426,7 @@ class PlotTs():
         return max(1, min(10, value))
 
     def _onSettingsChanged(self, change_set):
-        """Refresh compatibility views once for domains represented by legacy objects."""
+        """Refresh compatibility views once for domains exposed through compatibility objects."""
         compatibility_domains = {
             "series_defaults", "fit_defaults", "residual_defaults",
             "fit_current", "residual_current", "ensemble_defaults",

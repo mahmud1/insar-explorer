@@ -3989,7 +3989,7 @@ class GuiController(QObject):
         return max(1, min(10, value))
 
     def _loadReplicaPairCount(self):
-        """Load the symmetric Replica pair count from the canonical JSON config."""
+        """Load the symmetric Replica pair count from the runtime settings model."""
         return self.choose_point_click_handler.plot_ts.settings_model.replica.pair_count
 
     def _applicableReplicaTargets(self):
