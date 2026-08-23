@@ -345,13 +345,6 @@ class TimeSeriesPlotExporter:
                 .replace('"', '&quot;'))
 
     def _setExporterParameter(self, exporter, name, value):
-        """Set a pyqtgraph exporter parameter across supported API variants."""
-        parameters = exporter.parameters()
-        try:
-            parameters[name] = int(value)
-        except Exception:
-            pass
-        try:
-            parameters.param(name).setValue(int(value))
-        except Exception:
-            pass
+        """Set a pyqtgraph exporter parameter through the bundled parameter API."""
+        int_value = int(value)
+        exporter.parameters()[name] = int_value
