@@ -10,7 +10,7 @@ from ...qt_compat import (
     KEY_ESCAPE, KEY_F2, KEY_RETURN, KEY_SPACE, NO_UPDATE_CURRENT,
     SELECT_ROWS_SELECTION, WIDGET_SHORTCUT,
     PALETTE_ACTIVE, PALETTE_HIGHLIGHT, PALETTE_HIGHLIGHTED_TEXT,
-    PALETTE_INACTIVE,
+    PALETTE_INACTIVE, exec_dialog,
 )
 from .committed_columns import CommittedTimeSeriesColumn
 from .action_icons import (
@@ -456,10 +456,7 @@ class CommittedTimeSeriesView(QtWidgets.QTableView):
         menu.addSeparator()
         menu.addAction(self.remove_action)
         global_position = self.viewport().mapToGlobal(position)
-        if hasattr(menu, "exec"):
-            menu.exec(global_position)
-        else:
-            menu.exec_(global_position)
+        exec_dialog(menu, global_position)
 
     def mousePressEvent(self, event):
         index = self.indexAt(event.pos())

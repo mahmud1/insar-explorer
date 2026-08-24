@@ -11,6 +11,7 @@ Insar Explorer and triggered unnecessary security scanner warnings:
 - `flowchart`
 - `opengl`
 - `console`
+- `examples`
 
 
 - Removed `multiprocess` and `widgets/RemoteGraphicsView.py` and removed `from .widgets.RemoteGraphicsView import RemoteGraphicsView` from `__init__.py`

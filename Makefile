@@ -48,7 +48,7 @@ PY_FILES = \
 
 UI_FILES = insar_explorer_dockwidget_base.ui
 
-EXTRAS = metadata.txt icon.png
+EXTRAS = metadata.txt icon.png .bandit
 
 EXTRA_DIRS =
 
@@ -242,6 +242,34 @@ pep8:
 	@echo "-----------"
 	@echo "Ignored in PEP8 check:"
 	@echo $(PEP8EXCLUDE)
+
+
+
+# Security scanning
+.PHONY: bandit bandit-release bandit-vendor security
+
+bandit:
+	@echo
+	@echo "--------------------------------"
+	@echo "Bandit: first-party source scan"
+	@echo "--------------------------------"
+	bandit -r src
+
+bandit-release:
+	@echo
+	@echo "--------------------------------"
+	@echo "Bandit: release-equivalent scan"
+	@echo "--------------------------------"
+	bandit -r . -x ./test,./tests,./external/pyqtgraph
+
+bandit-vendor:
+	@echo
+	@echo "--------------------------------"
+	@echo "Bandit: vendored pyqtgraph audit"
+	@echo "--------------------------------"
+	cd external/pyqtgraph && bandit -r . --exit-zero
+
+security: bandit bandit-release
 
 
 # Linting

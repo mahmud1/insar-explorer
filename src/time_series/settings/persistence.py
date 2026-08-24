@@ -11,7 +11,7 @@ TimeSeriesSettingsPersistence = QSettingsUserPreferencesRepository
 
 
 def build_legacy_plot_params(model, existing=None):
-    """Build the temporary legacy ``PlotTs.parms`` view from runtime settings.
+    """Build the temporary ``PlotTs.parms`` compatibility view from runtime settings.
 
     TODO(phase-appearance-export): Remove when all consumers accept typed submodels.
     """

@@ -38,6 +38,37 @@ from .qt_compat import NO_PEN, SOLID_LINE
 from .ui.map_settings.range_state import StdCalculationMode
 
 
+def _scoped_or_legacy_enum(owner, enum_name, value_name, legacy_name=None):
+    """Return a scoped enum value when exposed, otherwise its legacy flat alias."""
+    enum_owner = getattr(owner, enum_name, None)
+    if enum_owner is not None and hasattr(enum_owner, value_name):
+        return getattr(enum_owner, value_name)
+    return getattr(owner, legacy_name or value_name)
+
+
+def _millimeter_render_unit(qgis_owner, unit_types_owner):
+    """Resolve the millimetre render unit across supported PyQGIS enum layouts."""
+    render_unit = getattr(qgis_owner, "RenderUnit", None)
+    if render_unit is not None and hasattr(render_unit, "Millimeters"):
+        return render_unit.Millimeters
+    return _scoped_or_legacy_enum(
+        unit_types_owner, "RenderUnit", "RenderMillimeters"
+    )
+
+
+def _color_ramp_shader_type(value_name, qgis_owner=None, shader_owner=None):
+    """Resolve a color-ramp interpolation method across QGIS 3 and QGIS 4."""
+    qgis_owner = Qgis if qgis_owner is None else qgis_owner
+    shader_owner = QgsColorRampShader if shader_owner is None else shader_owner
+
+    interpolation_method = getattr(qgis_owner, "ShaderInterpolationMethod", None)
+    modern_name = "Linear" if value_name == "Interpolated" else value_name
+    if interpolation_method is not None and hasattr(interpolation_method, modern_name):
+        return getattr(interpolation_method, modern_name)
+
+    return _scoped_or_legacy_enum(shader_owner, "Type", value_name)
+
+
 class velocity():
     def __init__(self):
         self.min_value = None
@@ -427,10 +458,7 @@ class InsarMap:
     @staticmethod
     def _millimeterRenderUnit():
         """Return the QGIS millimetre render unit across QGIS 3 and QGIS 4."""
-        render_unit = getattr(Qgis, "RenderUnit", None)
-        if render_unit is not None and hasattr(render_unit, "Millimeters"):
-            return render_unit.Millimeters
-        return QgsUnitTypes.RenderMillimeters
+        return _millimeter_render_unit(Qgis, QgsUnitTypes)
 
     def _configurePointMarkerSymbol(self, symbol):
         """Apply point-marker shape, size, outline, and opacity consistently."""
@@ -496,7 +524,7 @@ class InsarMap:
         color_ramp_shader = QgsColorRampShader()
         color_ramp_shader.setMinimumValue(effective_min)
         color_ramp_shader.setMaximumValue(effective_max)
-        color_ramp_shader.setColorRampType(QgsColorRampShader.Interpolated)
+        color_ramp_shader.setColorRampType(_color_ramp_shader_type("Interpolated"))
 
         span = float(self.max_value) - float(self.min_value)
         items = []
@@ -510,7 +538,7 @@ class InsarMap:
             )
 
         color_ramp_shader.setColorRampItemList(items)
-        color_ramp_shader.setColorRampType(QgsColorRampShader.Interpolated)
+        color_ramp_shader.setColorRampType(_color_ramp_shader_type("Interpolated"))
         shader.setRasterShaderFunction(color_ramp_shader)
         renderer = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, shader)
         renderer.setClassificationMin(effective_min)
@@ -555,7 +583,7 @@ class InsarMap:
 
         shader = QgsRasterShader()
         color_ramp_shader = QgsColorRampShader()
-        color_ramp_shader.setColorRampType(QgsColorRampShader.Interpolated)
+        color_ramp_shader.setColorRampType(_color_ramp_shader_type("Interpolated"))
 
         color_ramp_items = []
         for i in range(self.num_classes):
@@ -580,7 +608,7 @@ class InsarMap:
                 color_ramp_items.append(QgsColorRampShader.ColorRampItem(adjusted_value, color, label))
 
         color_ramp_shader.setColorRampItemList(color_ramp_items)
-        color_ramp_shader.setColorRampType(QgsColorRampShader.Discrete)
+        color_ramp_shader.setColorRampType(_color_ramp_shader_type("Discrete"))
         shader.setRasterShaderFunction(color_ramp_shader)
 
         renderer = QgsSingleBandPseudoColorRenderer(layer.dataProvider(), 1, shader)

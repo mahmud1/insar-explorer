@@ -5,7 +5,7 @@ of branching on Qt binding versions or using enum aliases directly.
 """
 
 try:
-    from qgis.PyQt.QtCore import QEvent, QItemSelectionModel, QPoint, QRect, QSize, Qt
+    from qgis.PyQt.QtCore import QEvent, QItemSelectionModel, QPoint, QRect, QSize, QStandardPaths, Qt
     try:
         from qgis.PyQt.QtGui import QAction, QActionGroup, QGuiApplication, QPalette
     except ImportError:
@@ -17,7 +17,7 @@ try:
         QToolButton,
     )
 except ImportError:
-    from PySide6.QtCore import QEvent, QItemSelectionModel, QPoint, QRect, QSize, Qt
+    from PySide6.QtCore import QEvent, QItemSelectionModel, QPoint, QRect, QSize, QStandardPaths, Qt
     # QAction and QActionGroup are intentionally re-exported by this compatibility facade.
     from PySide6.QtGui import QAction, QActionGroup, QGuiApplication, QPalette  # noqa: F401
     from PySide6.QtWidgets import (
@@ -135,6 +135,10 @@ PALETTE_INACTIVE = _enum_value(QPalette, "ColorGroup", "Inactive")
 PALETTE_BASE = _enum_value(QPalette, "ColorRole", "Base")
 PALETTE_HIGHLIGHT = _enum_value(QPalette, "ColorRole", "Highlight")
 PALETTE_HIGHLIGHTED_TEXT = _enum_value(QPalette, "ColorRole", "HighlightedText")
+PALETTE_WINDOW_TEXT = _enum_value(QPalette, "ColorRole", "WindowText")
+
+# QStandardPaths enums
+HOME_LOCATION = _enum_value(QStandardPaths, "StandardLocation", "HomeLocation")
 
 # QStyle state flags
 STYLE_STATE_SELECTED = _enum_value(QStyle, "StateFlag", "State_Selected", "State_Selected")
@@ -217,11 +221,12 @@ RASTER_LAYER = (
 )
 
 
-def exec_dialog(dialog):
-    """Execute a Qt dialog across PyQt5/PyQt6 bindings."""
-    if hasattr(dialog, "exec"):
-        return dialog.exec()
-    return dialog.exec_()
+def exec_dialog(dialog, *args, **kwargs):
+    """Execute a Qt dialog or menu across PyQt5/PyQt6 bindings."""
+    execute = getattr(dialog, "exec", None)
+    if callable(execute):
+        return execute(*args, **kwargs)
+    return getattr(dialog, "exec_")(*args, **kwargs)
 
 
 def available_screen_geometry(global_point, widget=None):

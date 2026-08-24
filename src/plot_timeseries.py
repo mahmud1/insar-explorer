@@ -10,7 +10,7 @@ from uuid import UUID
 import numpy as np
 from ..external import pyqtgraph as pg
 from qgis.PyQt.QtCore import QPointF
-from qgis.PyQt.QtGui import QColor, QFont, QPalette
+from qgis.PyQt.QtGui import QColor, QFont
 from qgis.PyQt.QtWidgets import QApplication
 
 from .model_fitting import calculateFitStatistics, FittingModels, ModelFitError
@@ -23,6 +23,7 @@ from .time_series.hover import (
 )
 from .time_series.settings.persistence import build_legacy_plot_params
 from .time_series.persistence import NullProjectStateRepository
+from .qt_compat import PALETTE_WINDOW_TEXT
 from .time_series.store import TimeSeriesStore
 from .time_series.pending_session import PendingTimeSeriesSession, resolve_editable_record
 from .models.time_series import (
@@ -426,7 +427,7 @@ class PlotTs():
         return max(1, min(10, value))
 
     def _onSettingsChanged(self, change_set):
-        """Refresh compatibility views once for domains represented by legacy objects."""
+        """Refresh compatibility views once for domains exposed through compatibility objects."""
         compatibility_domains = {
             "series_defaults", "fit_defaults", "residual_defaults",
             "fit_current", "residual_current", "ensemble_defaults",
@@ -2061,11 +2062,11 @@ class PlotTs():
         plot_widget = getattr(self.ui, "plot_widget", None)
         if plot_widget is not None:
             try:
-                return plot_widget.palette().color(QPalette.WindowText)
+                return plot_widget.palette().color(PALETTE_WINDOW_TEXT)
             except (AttributeError, RuntimeError):
                 pass
         try:
-            return QApplication.palette().color(QPalette.WindowText)
+            return QApplication.palette().color(PALETTE_WINDOW_TEXT)
         except RuntimeError:
             return QColor()
 

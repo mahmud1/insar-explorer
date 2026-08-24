@@ -35,7 +35,7 @@ class SeriesStyleSettings:
 
     @classmethod
     def from_params(cls, params):
-        """Build normalized settings from a legacy parameter dictionary."""
+        """Build normalized settings from the PlotTs.parms compatibility dictionary."""
         values = params.get("time series plot", {}) if isinstance(params, dict) else {}
         return cls(
             marker=normalize_marker(values.get("marker"), "o"),
@@ -50,7 +50,7 @@ class SeriesStyleSettings:
         )
 
     def as_params(self):
-        """Return values using the current config/plot key names."""
+        """Return values using the existing PlotTs.parms keys."""
         return {"marker": self.marker, "marker color": self.marker_color,
                 "marker alpha": self.marker_opacity, "marker edge color": self.marker_edge_color,
                 "marker size": self.marker_size, "line style": self.line_style,
@@ -58,7 +58,7 @@ class SeriesStyleSettings:
                 "line width": self.line_width}
 
     def to_time_series_style(self, base_params=None):
-        """Create an independent legacy style for compatibility consumers."""
+        """Create an independent style projection for compatibility consumers."""
         from ...models.time_series import TimeSeriesStyle
 
         params = deepcopy(base_params) if isinstance(base_params, dict) else {}
@@ -77,7 +77,7 @@ class FitStyleSettings:
 
     @classmethod
     def fromParams(cls, params):
-        """Build normalized fit defaults from legacy parameters."""
+        """Build normalized fit defaults from compatibility parameters."""
         values = params.get("model fit", {}) if isinstance(params, dict) else {}
         return cls(
             line_style=normalize_fit_line_style(values.get("line style")),
@@ -87,7 +87,7 @@ class FitStyleSettings:
         )
 
     def asParams(self):
-        """Return values using legacy model-fit keys."""
+        """Return values using compatibility model-fit keys."""
         return {"line style": self.line_style, "line color": self.line_color,
                 "line width": self.line_width, "line alpha": self.line_alpha}
 
@@ -108,7 +108,7 @@ class ResidualStyleSettings:
 
     @classmethod
     def fromParams(cls, params):
-        """Build normalized residual defaults from legacy parameters."""
+        """Build normalized residual defaults from compatibility parameters."""
         values = params.get("residual plot", {}) if isinstance(params, dict) else {}
         return cls(
             marker=normalize_residual_marker(values.get("marker"), "o"),
@@ -126,7 +126,7 @@ class ResidualStyleSettings:
         )
 
     def asParams(self):
-        """Return values using legacy residual-plot keys."""
+        """Return values using compatibility residual-plot keys."""
         return {"marker": self.marker, "marker color": self.marker_color,
                 "marker edge color": self.marker_edge_color,
                 "marker size": self.marker_size, "marker alpha": self.marker_alpha,
@@ -146,7 +146,7 @@ class EnsembleStyleSettings:
 
     @classmethod
     def fromParams(cls, params):
-        """Build normalized ensemble defaults from legacy parameters."""
+        """Build normalized ensemble defaults from compatibility parameters."""
         values = params.get("time series plot", {}) if isinstance(params, dict) else {}
         return cls(
             member_line_color=normalize_color(values.get("series line color"), "gray"),
@@ -157,7 +157,7 @@ class EnsembleStyleSettings:
         )
 
     def asParams(self):
-        """Return values using legacy time-series plot keys."""
+        """Return values using compatibility time-series plot keys."""
         return {"series line color": self.member_line_color,
                 "series line width": self.member_line_width,
                 "series line alpha": self.member_line_alpha,
@@ -193,7 +193,7 @@ class ReplicaStyleSettings:
 
     @classmethod
     def fromParams(cls, params):
-        """Build visual Replica settings from legacy plot parameters."""
+        """Build visual Replica settings from compatibility plot parameters."""
         values = params.get("time series plot", {}) if isinstance(params, dict) else {}
         return cls(
             color_1=values.get(
@@ -213,7 +213,7 @@ class ReplicaStyleSettings:
         )
 
     def asParams(self):
-        """Return visual values using legacy time-series plot keys."""
+        """Return visual values using compatibility time-series plot keys."""
         return {
             "replica color 1": self.color_1,
             "replica color 2": self.color_2,
@@ -444,7 +444,7 @@ class XAxisSettings:
         manual_editor_start_policy=None, manual_editor_end_policy=None,
         manual_start=None, manual_end=None, custom_view=False, policy=None,
     ):
-        """Create active and remembered editor policies with legacy migration."""
+        """Create active and remembered editor policies with ``policy`` compatibility."""
         if policy in {"from_data", "manual"}:
             start_policy = end_policy = policy
         start_policy = self._normalize_policy(start_policy)
