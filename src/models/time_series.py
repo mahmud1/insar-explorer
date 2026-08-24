@@ -200,7 +200,7 @@ def presentation_from_legacy_params(
     params: Optional[Mapping[str, Any]], *, label: Optional[str] = None,
     visible: bool = True, z_order: Optional[int] = None,
 ) -> TimeSeriesPresentation:
-    """Build typed per-series presentation from legacy plot parameters."""
+    """Build typed per-series presentation from compatibility plot parameters."""
     copied = deepcopy(dict(params)) if isinstance(params, Mapping) else {}
     return TimeSeriesPresentation(
         series=SeriesStyleSettings.from_params(copied),
@@ -215,7 +215,7 @@ def presentation_from_legacy_params(
 
 
 def presentation_to_legacy_params(presentation: TimeSeriesPresentation) -> dict[str, Any]:
-    """Build a defensive legacy parameter dictionary for compatibility consumers."""
+    """Build a defensive parameter projection for compatibility consumers."""
     plot = {}
     plot.update(presentation.series.as_params())
     plot.update(presentation.ensemble.asParams())
@@ -238,7 +238,7 @@ class TimeSeriesStyle:
 
     @classmethod
     def fromParams(cls, params: Optional[dict], **kwargs: Any) -> "TimeSeriesStyle":
-        """Create copied legacy style metadata for compatibility consumers."""
+        """Create copied style metadata for compatibility consumers."""
         copied_params = deepcopy(params) if params is not None else {}
         copied_params.get("time series plot", {}).pop("replica pair count", None)
         return cls(params=copied_params, **kwargs)
@@ -309,13 +309,13 @@ class TimeSeriesRecord:
     source: Optional[TimeSeriesSource] = None
 
     def __post_init__(self) -> None:
-        """Normalize legacy selection values while preserving immutable ownership."""
+        """Normalize compatibility selection values while preserving immutable ownership."""
         object.__setattr__(self, "target", SpatialSelection.from_legacy(self.target))
         object.__setattr__(self, "reference", SpatialSelection.from_legacy(self.reference))
 
     @property
     def style(self) -> TimeSeriesStyle:
-        """Return a defensive legacy style projection of authoritative presentation."""
+        """Return a defensive style projection for compatibility consumers."""
         return TimeSeriesStyle(
             presentation_to_legacy_params(self.presentation),
             label=self.presentation.label,

@@ -41,7 +41,7 @@ class FitStyle:
         )
 
     def asParams(self):
-        """Return JSON-compatible values keyed for the existing model-fit section."""
+        """Return serialization-safe values keyed for the model-fit compatibility section."""
         return {
             "line style": self.line_style,
             "line color": self.line_color,

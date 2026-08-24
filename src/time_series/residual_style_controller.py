@@ -99,7 +99,11 @@ class ResidualStyleController:
 
     def randomizeColor(self, snapshots):
         from random import randint
-        color = "#{:02x}{:02x}{:02x}".format(randint(0, 255), randint(0, 255), randint(0, 255))
+        # non-security randomness used only to choose a display color.
+        red = randint(0, 255)  # nosec B311
+        green = randint(0, 255)  # nosec B311
+        blue = randint(0, 255)  # nosec B311
+        color = "#{:02x}{:02x}{:02x}".format(red, green, blue)
         return self.applyValues(snapshots, {"marker color": color, "line color": color})
 
     @staticmethod

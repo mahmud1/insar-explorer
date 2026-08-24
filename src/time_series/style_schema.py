@@ -57,7 +57,7 @@ RESIDUAL_STYLE_KEYS = (
 
 
 def normalize_color(value, fallback="#000000"):
-    """Return a stable JSON-compatible color string without Qt dependencies."""
+    """Return a stable serialization-safe color string without Qt dependencies."""
     if isinstance(value, str):
         value = value.strip()
         if value:

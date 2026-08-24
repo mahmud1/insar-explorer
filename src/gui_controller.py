@@ -62,6 +62,7 @@ from .qt_compat import (
     MESSAGE_ROLE_ACTION,
     MESSAGE_ROLE_DESTRUCTIVE,
     MESSAGE_ROLE_REJECT,
+    HOME_LOCATION,
 )
 from .time_series.fit_state import TimeSeriesFitState
 from .time_series.list_state import TimeSeriesListState
@@ -2512,9 +2513,11 @@ class GuiController(QObject):
     def randomizeSelectedResidualColor(self):
         """Store one random residual color and apply it to selected targets."""
         from random import randint
-        color = "#{:02x}{:02x}{:02x}".format(
-            randint(0, 255), randint(0, 255), randint(0, 255)
-        )
+        # non-security randomness used only to choose a display color.
+        red = randint(0, 255)  # nosec B311
+        green = randint(0, 255)  # nosec B311
+        blue = randint(0, 255)  # nosec B311
+        color = "#{:02x}{:02x}{:02x}".format(red, green, blue)
         values = self._currentResidualStyle().asParams()
         values.update({"marker color": color, "line color": color})
         current = ResidualStyleSettings.fromParams({"residual plot": values})
@@ -3989,7 +3992,7 @@ class GuiController(QObject):
         return max(1, min(10, value))
 
     def _loadReplicaPairCount(self):
-        """Load the symmetric Replica pair count from the canonical JSON config."""
+        """Load the symmetric Replica pair count from the runtime settings model."""
         return self.choose_point_click_handler.plot_ts.settings_model.replica.pair_count
 
     def _applicableReplicaTargets(self):
@@ -4471,7 +4474,7 @@ class GuiController(QObject):
         if saved_path and os.path.isdir(saved_path):
             return saved_path
 
-        home_path = QStandardPaths.writableLocation(QStandardPaths.HomeLocation)
+        home_path = QStandardPaths.writableLocation(HOME_LOCATION)
         if home_path and os.path.isdir(home_path):
             return home_path
 
