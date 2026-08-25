@@ -48,7 +48,7 @@ PY_FILES = \
 
 UI_FILES = insar_explorer_dockwidget_base.ui
 
-EXTRAS = metadata.txt icon.png .bandit
+EXTRAS = metadata.txt icon.png
 
 EXTRA_DIRS =
 
@@ -260,14 +260,14 @@ bandit-release:
 	@echo "--------------------------------"
 	@echo "Bandit: release-equivalent scan"
 	@echo "--------------------------------"
-	bandit -r . -x ./test,./tests,./external/pyqtgraph
+	bandit -r . -x ./test,./tests
 
 bandit-vendor:
 	@echo
 	@echo "--------------------------------"
 	@echo "Bandit: vendored pyqtgraph audit"
 	@echo "--------------------------------"
-	cd external/pyqtgraph && bandit -r . --exit-zero
+	cd external/pyqtgraph && bandit -r .
 
 security: bandit bandit-release
 
