@@ -11,7 +11,8 @@ More info at http://www.scipy.org/Cookbook/MetaArray
 
 import copy
 import os
-import pickle
+# Deserialization sites are explicitly reviewed and separately annotated with B301 suppressions.
+import pickle  # nosec B403
 import warnings
 import ast
 
@@ -854,13 +855,7 @@ class MetaArray(object):
             raise Exception("Incompatible arguments: readAllData=True and writable=True")
         
         if not HAVE_HDF5:
-            try:
-                assert writable==False
-                assert readAllData != False
-                self._readHDF5Remote(fileName)
-                return
-            except:
-                raise Exception("The file '%s' is HDF5-formatted, but the HDF5 library (h5py) was not found." % fileName)
+            raise Exception("The file '%s' is HDF5-formatted, but the HDF5 library (h5py) was not found." % fileName)
         
         ## by default, readAllData=True for files < 500MB
         if readAllData is None:
@@ -874,10 +869,8 @@ class MetaArray(object):
         f = h5py.File(fileName, mode)
         
         ver = f.attrs['MetaArray']
-        try:
+        if isinstance(ver, bytes):
             ver = ver.decode('utf-8')
-        except:
-            pass
         if ver > MetaArray.version:
             print("Warning: This file was written with MetaArray version %s, but you are using version %s. (Will attempt to read anyway)" % (str(ver), str(MetaArray.version)))
         meta = MetaArray.readHDF5Meta(f['info'])
@@ -890,25 +883,6 @@ class MetaArray(object):
             self._data = f['data'][:]
             f.close()
             
-    def _readHDF5Remote(self, fileName):
-        ## Used to read HDF5 files via remote process.
-        ## This is needed in the case that HDF5 is not importable due to the use of python-dbg.
-        proc = getattr(MetaArray, '_hdf5Process', None)
-        
-        if proc == False:
-            raise Exception('remote read failed')
-        if proc is None:
-            from .. import multiprocess as mp
-
-            #print "new process"
-            proc = mp.Process(executable='/usr/bin/python')
-            proc.setProxyOptions(deferGetattr=True)
-            MetaArray._hdf5Process = proc
-            MetaArray._h5py_metaarray = proc._import('pyqtgraph.metaarray')
-        ma = MetaArray._h5py_metaarray.MetaArray(file=fileName)
-        self._data = ma.asarray()._getValue()
-        self._info = ma._info._getValue()
-
     @staticmethod
     def mapHDF5Array(data, writable=False):
         off = data.id.get_offset()
@@ -949,10 +923,8 @@ class MetaArray(object):
             data[k] = val
         
         typ = root.attrs['_metaType_']
-        try:
+        if isinstance(typ, bytes):
             typ = typ.decode('utf-8')
-        except:
-            pass
         del data['_metaType_']
         
         if typ == 'dict':

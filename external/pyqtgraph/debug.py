@@ -374,7 +374,7 @@ def objectSize(obj, ignore=None, verbose=False, depth=0, recursive=False):
     if isinstance(obj, ndarray):
         try:
             size += len(obj.data)
-        except:
+        except (TypeError, ValueError, BufferError):
             pass
             
         
@@ -1072,7 +1072,7 @@ def qObjectReport(verbose=False):
                 try:
                     QObjCache[oid] += "  " + obj.parent().objectName()
                     QObjCache[oid] += "  " + obj.text()
-                except:
+                except (AttributeError, RuntimeError, TypeError):
                     pass
             print("check obj", oid, str(QObjCache[oid]))
             if obj.parent() is None:

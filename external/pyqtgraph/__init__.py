@@ -265,7 +265,6 @@ from .widgets.ColorMapWidget import *
 from .widgets.ComboBox import *
 from .widgets.DataFilterWidget import *
 from .widgets.DataTreeWidget import *
-from .widgets.DiffTreeWidget import *
 from .widgets.FeedbackButton import *
 from .widgets.FileDialog import *
 from .widgets.GradientWidget import *

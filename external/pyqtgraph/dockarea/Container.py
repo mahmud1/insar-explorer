@@ -90,7 +90,7 @@ class Container(object):
             #print "Child", ev.child(), "removed, updating", self
             try:
                 ch.sigStretchChanged.disconnect(self.childStretchChanged)
-            except:
+            except (TypeError, RuntimeError):
                 pass
             self.updateStretch()
         

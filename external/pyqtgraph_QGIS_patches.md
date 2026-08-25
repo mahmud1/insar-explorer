@@ -43,3 +43,37 @@ The following components have been modified to address security scanner warnings
   4. replace `val = eval(val)` with `val = ast.literal_eval(val)`
   5. `subarr = pickle.loads(fd.read())  # nosec B301`
   6. `data = pickle.loads(fd.read(inf["len"]))  # nosec B301` 
+
+### Security / Bandit cleanup
+
+- `SignalProxy.py`
+  - Narrow Qt signal disconnect failures to `TypeError`/`RuntimeError`.
+  - Replace the slot-connected assertion with an explicit `RuntimeError` guard.
+- `debug.py`
+  - Narrow expected probing failures in ndarray-size and QObject-report helpers.
+- `dockarea/Container.py`
+  - Narrow expected signal-disconnect failures.
+- `graphicsItems/ScatterPlotItem.py`
+  - Narrow symbol-conversion probing failures to expected conversion exceptions.
+- `graphicsItems/ViewBox/ViewBox.py`
+  - Replace exception-swallowing list removal with an explicit membership check.
+- `widgets/ScatterPlotWidget.py`
+  - Narrow expected signal-disconnect failures.
+- `functions_qimage.py`
+  - Replace the internal LUT assertion with an explicit runtime invariant check.
+- `graphicsItems/AxisItem.py`
+  - Replace `stopAxisAtTick` assertion-based validation with explicit validation.
+- `parametertree/SystemSolver.py`
+  - Replace range-constraint shape assertion with explicit validation.
+- `parametertree/parameterTypes/pen.py`
+  - Replace the fallback receiver-count assertion with an explicit runtime invariant check.
+- `graphicsItems/GraphicsItem.py`
+  - Remove the runtime `xml.etree.ElementTree.Element` import used only for annotations; use `Any` annotations instead.
+- `exporters/SVGExporter.py`
+  - Mark the reviewed `xml.dom.minidom` import with targeted `# nosec B408`; minidom is only used with hardcoded or internally generated SVG and parse sites remain separately reviewed.
+- `metaarray/MetaArray.py`
+  - Mark the reviewed `pickle` import with targeted `# nosec B403`; deserialization sites remain separately annotated with `# nosec B301`.
+  - Remove the dead remote-HDF5 fallback that depended on the already-removed `multiprocess` package. When `h5py` is unavailable, HDF5 loading now fails immediately with the existing explicit unsupported-dependency error.
+  - Replace byte-decoding `try/except/pass` blocks with explicit `bytes` checks.
+- `widgets/DiffTreeWidget.py`
+  - Removed after dependency audit found no production or retained-runtime users other than its top-level pyqtgraph export; the corresponding export was removed from `external/pyqtgraph/__init__.py`.

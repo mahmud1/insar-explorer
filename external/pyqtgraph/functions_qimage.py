@@ -285,7 +285,8 @@ def try_make_qimage(image, *, levels, lut, transparentLocations=None):
                     xp, image, levels, lut, forceApplyLut=True
                 )
                 levels = None
-                assert lut is None
+                if lut is not None:
+                    raise RuntimeError("Internal image conversion invariant violated: LUT was not consumed")
                 image[..., 3][transparentLocations] = 0
         else:
             # RGB float images

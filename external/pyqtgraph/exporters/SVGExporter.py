@@ -2,7 +2,8 @@ __all__ = ['SVGExporter']
 
 import contextlib
 import re
-import xml.dom.minidom as xml
+# minidom is used only with hardcoded or internally generated SVG; parse sites are separately reviewed.
+import xml.dom.minidom as xml  # nosec B408
 
 import numpy as np
 

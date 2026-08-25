@@ -193,9 +193,11 @@ class AxisItem(GraphicsWidget):
                 else:
                     self.style['tickTextOffset'][1] = value
             elif kwd == 'stopAxisAtTick':
-                try:
-                    assert len(value) == 2 and isinstance(value[0], bool) and isinstance(value[1], bool)
-                except:
+                if (
+                    not isinstance(value, (tuple, list))
+                    or len(value) != 2
+                    or not all(isinstance(v, bool) for v in value)
+                ):
                     raise ValueError("Argument 'stopAxisAtTick' must have type (bool, bool)")
                 self.style[kwd] = value
             else:
