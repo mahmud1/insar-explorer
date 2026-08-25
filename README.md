@@ -4,24 +4,24 @@
 
 ## Description
 InSAR Explorer is a QGIS plugin for interactive visualization and analysis of InSAR time-series data. It supports the documented preparation workflows for [SARvey](https://github.com/luhipi/sarvey), [MintPy](https://github.com/insarlab/MintPy), [MiaplPy](https://github.com/insarlab/MiaplPy), [GMTSAR](https://topex.ucsd.edu/gmtsar/), [SARscape](https://www.sarmap.ch/index.php/software/sarscape/), and [EGMS](https://egms.land.copernicus.eu/).
-Check the full [documentation](https://insar-explorer.eodeck.com) for supported data formats and preparation instructions.
+Check the full [documentation](https://docs.insar-explorer.eodeck.com) for supported data formats and preparation instructions.
 
 ## How to use
 ### Install the plugin
 Install InSAR Explorer from the QGIS Plugin Repository. Search for `InSAR Explorer` in the QGIS Plugin Manager and click `Install`.
-More information about installation methods is available in the [documentation](https://insar-explorer.eodeck.com/en/latest/#installation).
+More information about installation methods is available in the [documentation](https://docs.insar-explorer.eodeck.com/en/latest/#installation).
 
 ### Prepare time-series data
-Prepare the time-series data as a supported vector or raster layer in the [required format](https://insar-explorer.eodeck.com/en/latest/#data-structure).
-Preparation instructions are available for the [documented processing workflows](https://insar-explorer.eodeck.com/en/latest/#data-preparation).
-Sample data are available from the [documentation](https://insar-explorer.eodeck.com/en/latest/#sample-data).
+Prepare the time-series data as a supported vector or raster layer in the [required format](https://docs.insar-explorer.eodeck.com/en/latest/#data-structure).
+Preparation instructions are available for the [documented processing workflows](https://docs.insar-explorer.eodeck.com/en/latest/#data-preparation).
+Sample data are available from the [documentation](https://docs.insar-explorer.eodeck.com/en/latest/#sample-data).
 
 ### Explore time series
 Open a supported vector or raster InSAR layer, launch InSAR Explorer, and use the Target/Reference selection tools to interactively inspect time series. Selected time series can be retained and compared, styled, fitted, and exported.
-See the full [usage documentation](https://insar-explorer.eodeck.com/en/latest/#usage) for the current workflow.
+See the full [usage documentation](https://docs.insar-explorer.eodeck.com/en/latest/#usage) for the current workflow.
 
 ## Contributing
-We welcome contributions to the project. Please follow the guidelines in the [documentation](https://insar-explorer.eodeck.com/en/latest/#contributing).
+We welcome contributions to the project. Please follow the guidelines in the [documentation](https://docs.insar-explorer.eodeck.com/en/latest/#contributing).
 
 ## License
 This plugin is licensed under the GPL-3.0 license. See the [LICENSE](https://github.com/eodeck/insar-explorer/blob/main/LICENSE) file for more details.

@@ -13,8 +13,9 @@ from qgis.PyQt.QtWidgets import (
 from ... import __version__
 
 
-DOCUMENTATION_URL = "https://insar-explorer.eodeck.com/en/latest"
-DATA_PREPARATION_URL = "https://insar-explorer.eodeck.com/en/latest/#data-preparation"
+DOCUMENTATION_URL = "https://docs.insar-explorer.eodeck.com/en/latest"
+HOMEPAGE_URL = "https://insar-explorer.eodeck.com"
+DATA_PREPARATION_URL = "https://docs.insar-explorer.eodeck.com/en/latest/#data-preparation"
 ZENODO_URL = "https://doi.org/10.5281/zenodo.14052813"
 SOURCE_CODE_URL = "https://github.com/eodeck/insar-explorer"
 ISSUES_URL = "https://github.com/eodeck/insar-explorer/issues"
@@ -91,6 +92,9 @@ class AboutDialog(QDialog):
         content_layout.addWidget(_section_title("Resources"))
         resource_layout = QHBoxLayout()
         resource_layout.setSpacing(12)
+        resource_layout.addWidget(
+            _link_label("Home page", HOMEPAGE_URL, "about_homepage_link")
+        )
         resource_layout.addWidget(
             _link_label("Documentation", DOCUMENTATION_URL, "about_documentation_link")
         )
