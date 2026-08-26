@@ -5,8 +5,7 @@ import weakref
 from collections import OrderedDict
 from functools import reduce
 from math import hypot
-from typing import Optional
-from xml.etree.ElementTree import Element
+from typing import Any, Optional
 
 from .. import functions as fn
 from ..GraphicsScene import GraphicsScene
@@ -609,8 +608,8 @@ class GraphicsItem(object):
 
     def generateSvg(
             self,
-            nodes: dict[str, Element]
-    ) -> Optional[tuple[Element, list[Element]]]:
+            nodes: dict[str, Any]
+    ) -> Optional[tuple[Any, list[Any]]]:
         """Method to override to manually specify the SVG writer mechanism.
 
         Parameters

@@ -1181,7 +1181,7 @@ class SpotItem(object):
         try:
             n = int(symbol)
             symbol = list(Symbols.keys())[n % len(Symbols)]
-        except:
+        except (TypeError, ValueError, OverflowError):
             pass
         return symbol
 

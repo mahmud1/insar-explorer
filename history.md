@@ -1,5 +1,10 @@
 ### History
 
+v2.10.0
+
+- Update packaging script.
+- Remove .bandit config.
+- Harden bundled pyqtgraph integration by resolving Bandit findings.
 
 v2.9.0
 

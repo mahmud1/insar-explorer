@@ -48,7 +48,7 @@ PY_FILES = \
 
 UI_FILES = insar_explorer_dockwidget_base.ui
 
-EXTRAS = metadata.txt icon.png .bandit
+EXTRAS = metadata.txt icon.png
 
 EXTRA_DIRS =
 
@@ -73,7 +73,6 @@ QGISDIR=~/Library/Application Support/QGIS/QGIS3/profiles/default/python/plugins
 
 HELP = help/build/html
 
-PLUGIN_UPLOAD = $(c)/plugin_upload.py
 
 RESOURCE_SRC=$(shell grep '^ *<file' resources.qrc | sed 's@</file>@@g;s/.*>//g' | tr '\n' ' ')
 
@@ -149,37 +148,6 @@ derase:
 	@echo "-------------------------"
 	rm -Rf $(HOME)/$(QGISDIR)/python/plugins/$(PLUGINNAME)
 
-zip: deploy dclean
-	@echo
-	@echo "---------------------------"
-	@echo "Creating plugin zip bundle."
-	@echo "---------------------------"
-	# The zip target deploys the plugin and creates a zip file with the deployed
-	# content. You can then upload the zip file on http://plugins.qgis.org
-	rm -f $(PLUGINNAME).zip
-	cd $(HOME)/$(QGISDIR)/python/plugins; zip -9r $(CURDIR)/$(PLUGINNAME).zip $(PLUGINNAME)
-
-package: compile
-	# Create a zip package of the plugin named $(PLUGINNAME).zip.
-	# This requires use of git (your plugin development directory must be a
-	# git repository).
-	# To use, pass a valid commit or tag as follows:
-	#   make package VERSION=Version_0.3.2
-	@echo
-	@echo "------------------------------------"
-	@echo "Exporting plugin to zip package.	"
-	@echo "------------------------------------"
-	rm -f $(PLUGINNAME).zip
-	git archive --prefix=$(PLUGINNAME)/ -o $(PLUGINNAME).zip $(VERSION)
-	echo "Created package: $(PLUGINNAME).zip"
-
-upload: zip
-	@echo
-	@echo "-------------------------------------"
-	@echo "Uploading plugin to QGIS Plugin repo."
-	@echo "-------------------------------------"
-	$(PLUGIN_UPLOAD) $(PLUGINNAME).zip
-
 transup:
 	@echo
 	@echo "------------------------------------------------"
@@ -246,7 +214,7 @@ pep8:
 
 
 # Security scanning
-.PHONY: bandit bandit-release bandit-vendor security
+.PHONY: bandit bandit-release bandit-vendor security package-qgis
 
 bandit:
 	@echo
@@ -260,17 +228,19 @@ bandit-release:
 	@echo "--------------------------------"
 	@echo "Bandit: release-equivalent scan"
 	@echo "--------------------------------"
-	bandit -r . -x ./test,./tests,./external/pyqtgraph
+	bandit -r . -x ./test,./tests
 
 bandit-vendor:
 	@echo
 	@echo "--------------------------------"
 	@echo "Bandit: vendored pyqtgraph audit"
 	@echo "--------------------------------"
-	cd external/pyqtgraph && bandit -r . --exit-zero
+	cd external/pyqtgraph && bandit -r .
 
 security: bandit bandit-release
 
+package-qgis:
+	@python3 scripts/package_qgis_plugin.py
 
 # Linting
 lint:
