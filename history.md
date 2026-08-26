@@ -1,6 +1,6 @@
 ### History
 
-v2.10.0dev
+v2.10.0
 
 - Update packaging script.
 - Remove .bandit config.
